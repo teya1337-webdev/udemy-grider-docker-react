@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  # Service for running the react-app
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+
+    ports:
+      - '3000:3000'
+
+    volumes:
+      - /home/node/app/node_modules
+      - ./:/home/node/app:z
+
+  # Service for testing
+  tests:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+
+    volumes:
+      - /home/node/app/node_modules
+      - ./:/home/node/app:z
+
+    # This specified command overrides the default CMD in the Dockerfile.dev
+    command: ['npm', 'run', 'test']

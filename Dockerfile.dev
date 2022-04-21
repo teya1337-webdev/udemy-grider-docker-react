@@ -1,0 +1,23 @@
+# Dockerfile for development
+
+# Dockerfile.dev (LINUX)
+
+#REMINDER: SECURITY: By default, the Docker "node" image includes a non-root "node" user that you can use to avoid running your application container as root. It is a recommended security practice to avoid running containers as root and to restrict capabilities within the container to only those required to run its processes. Therefore, you should use the "node" user's home directory as the working directory for our application and set him as our user inside the container.FROM node:alpine
+
+# SUPER IMPORTANT NOTE: CRITICAL: SELINUX: If you are using Docker on Fedora, CentOS, RHEL, you must use the "--priviliged" flag or ":Z" when specifying the path to mount volumes. If you don't, then you will get a permissions error.
+
+FROM node:alpine
+
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+
+WORKDIR /home/node/app
+
+COPY --chown=node:node ./package.json ./
+
+RUN npm install
+
+COPY --chown=node:node ./ ./
+
+USER node
+
+CMD ["npm", "start"]
